@@ -1,0 +1,106 @@
+{
+  "bundle": {
+    "name": "my_project2",
+    "target": "dev",
+    "environment": "dev",
+    "terraform": {
+      "exec_path": "/home/parallels/charles/my_project2/.databricks/bundle/dev/bin/terraform"
+    },
+    "lock": {
+      "enabled": null,
+      "force": false
+    },
+    "force": false,
+    "git": {},
+    "mode": "development"
+  },
+  "include": [
+    "resources/my_project2_job.yml"
+  ],
+  "workspace": {
+    "host": "https://adb-1209901303365609.9.azuredatabricks.net",
+    "current_user": {
+      "short_name": "charles_chen",
+      "active": true,
+      "displayName": "Charles Chen",
+      "emails": [
+        {
+          "primary": true,
+          "type": "work",
+          "value": "charles.chen@databricks.com"
+        }
+      ],
+      "entitlements": [
+        {
+          "value": "allow-cluster-create"
+        },
+        {
+          "value": "allow-instance-pool-create"
+        }
+      ],
+      "externalId": "1d8092e2-5142-4782-878a-dd44fd117c75",
+      "groups": [
+        {
+          "display": "admins",
+          "$ref": "Groups/435029418072984",
+          "type": "direct",
+          "value": "435029418072984"
+        }
+      ],
+      "id": "1796897449581088",
+      "name": {
+        "familyName": "Chen",
+        "givenName": "Charles"
+      },
+      "userName": "charles.chen@databricks.com"
+    },
+    "root_path": "/Users/charles.chen@databricks.com/.bundle/my_project2/dev",
+    "file_path": "/Users/charles.chen@databricks.com/.bundle/my_project2/dev/files",
+    "artifact_path": "/Users/charles.chen@databricks.com/.bundle/my_project2/dev/artifacts",
+    "state_path": "/Users/charles.chen@databricks.com/.bundle/my_project2/dev/state"
+  },
+  "resources": {
+    "jobs": {
+      "my_project2_job": {
+        "email_notifications": {
+          "on_failure": [
+            "charles.chen@databricks.com"
+          ]
+        },
+        "job_clusters": [
+          {
+            "job_cluster_key": "job_cluster",
+            "new_cluster": {
+              "autoscale": {
+                "max_workers": 4,
+                "min_workers": 1
+              },
+              "node_type_id": "Standard_D3_v2",
+              "spark_version": "13.3.x-scala2.12"
+            }
+          }
+        ],
+        "max_concurrent_runs": 4,
+        "name": "[dev charles_chen] my_project2_job",
+        "schedule": {
+          "pause_status": "PAUSED",
+          "quartz_cron_expression": "44 37 8 * * ?",
+          "timezone_id": "Europe/Amsterdam"
+        },
+        "tags": {
+          "dev": "Charles Chen"
+        },
+        "tasks": [
+          {
+            "job_cluster_key": "job_cluster",
+            "notebook_task": {
+              "notebook_path": "/Users/charles.chen@databricks.com/.bundle/my_project2/dev/files/src/notebook"
+            },
+            "task_key": "notebook_task"
+          }
+        ]
+      }
+    }
+  },
+  "sync": {}
+}
