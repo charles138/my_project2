@@ -23,6 +23,9 @@ resources:
           notebook_task:
             # notebook_path: src/notebook
             notebook_path: ../src/notebook.ipynb        
+            base_parameters: 
+              Environment: ${bundle.target}
+              top_k: "50"
 
       job_clusters:
         - job_cluster_key: job_cluster
