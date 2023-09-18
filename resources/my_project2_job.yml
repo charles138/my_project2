@@ -5,8 +5,8 @@ resources:
       name: my_project2_job_${bundle.target}
 
       schedule:
-        quartz_cron_expression: '44 37 8 * * ?'
-        timezone_id: Europe/Amsterdam
+        quartz_cron_expression: '00 00 20 * * ?'
+        timezone_id: America/New_York
 
       email_notifications:
         on_failure:

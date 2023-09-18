@@ -14,7 +14,7 @@
     "git": {
       "branch": "main",
       "origin_url": "https://github.com/charles138/my_project2.git",
-      "commit": "b6323cf1f65887d760f8779f9489ad272f2b3d13"
+      "commit": "07d138a971811d2dc629ebe4ce3a7a59bc1733cb"
     },
     "mode": "development"
   },
@@ -85,7 +85,7 @@
           }
         ],
         "max_concurrent_runs": 4,
-        "name": "[dev charles_chen] my_project2_job",
+        "name": "[dev charles_chen] my_project2_job_dev",
         "schedule": {
           "pause_status": "PAUSED",
           "quartz_cron_expression": "44 37 8 * * ?",
@@ -98,6 +98,10 @@
           {
             "job_cluster_key": "job_cluster",
             "notebook_task": {
+              "base_parameters": {
+                "Environment": "dev",
+                "top_k": "50"
+              },
               "notebook_path": "/Users/charles.chen@databricks.com/.bundle/dev/my_project2/files/src/notebook"
             },
             "task_key": "notebook_task"
