@@ -30,7 +30,7 @@ targets:
               job_cluster_key: job_cluster
               notebook_task:
                 # notebook_path: ../src/notebook.ipynb
-                notebook_path: /Users/${workspace.current_user.userName}/.bundle/${bundle.target}/${bundle.name}/files/src/notebook.ipynb
+                notebook_path: /Users/${workspace.current_user.userName}/.bundle/${bundle.target}/${bundle.name}/files/src/notebook
                 base_parameters: 
                   Environment: ${bundle.target}
                   top_k: "6"
@@ -67,7 +67,7 @@ targets:
               job_cluster_key: job_cluster
               notebook_task:
                 # notebook_path: ../src/notebook.ipynb
-                notebook_path: /Shared/.bundle/Staging/my_project2/files/src/notebook.ipynb
+                notebook_path: /Shared/.bundle/Staging/my_project2/files/src/notebook
                 base_parameters: 
                   Environment: ${bundle.target}
                   top_k: "7"
@@ -115,7 +115,7 @@ targets:
               job_cluster_key: job_cluster
               notebook_task:
                 # notebook_path: ../src/notebook.ipynb        
-                notebook_path: /Shared/.bundle/Prod/my_project2/files/src/notebook.ipynb
+                notebook_path: /Shared/.bundle/Prod/my_project2/files/src/notebook
                 base_parameters: 
                   Environment: ${bundle.target}
                   top_k: "8"
