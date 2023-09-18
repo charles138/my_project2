@@ -11,7 +11,11 @@
       "force": false
     },
     "force": false,
-    "git": {},
+    "git": {
+      "branch": "main",
+      "origin_url": "https://github.com/charles138/my_project2.git",
+      "commit": "b6323cf1f65887d760f8779f9489ad272f2b3d13"
+    },
     "mode": "development"
   },
   "include": [
@@ -54,10 +58,10 @@
       },
       "userName": "charles.chen@databricks.com"
     },
-    "root_path": "/Users/charles.chen@databricks.com/.bundle/my_project2/dev",
-    "file_path": "/Users/charles.chen@databricks.com/.bundle/my_project2/dev/files",
-    "artifact_path": "/Users/charles.chen@databricks.com/.bundle/my_project2/dev/artifacts",
-    "state_path": "/Users/charles.chen@databricks.com/.bundle/my_project2/dev/state"
+    "root_path": "/Users/charles.chen@databricks.com/.bundle/dev/my_project2",
+    "file_path": "/Users/charles.chen@databricks.com/.bundle/dev/my_project2/files",
+    "artifact_path": "/Users/charles.chen@databricks.com/.bundle/dev/my_project2/artifacts",
+    "state_path": "/Users/charles.chen@databricks.com/.bundle/dev/my_project2/state"
   },
   "resources": {
     "jobs": {
@@ -94,7 +98,7 @@
           {
             "job_cluster_key": "job_cluster",
             "notebook_task": {
-              "notebook_path": "/Users/charles.chen@databricks.com/.bundle/my_project2/dev/files/src/notebook"
+              "notebook_path": "/Users/charles.chen@databricks.com/.bundle/dev/my_project2/files/src/notebook"
             },
             "task_key": "notebook_task"
           }
