@@ -34,6 +34,12 @@ targets:
                 base_parameters: 
                   Environment: ${bundle.target}
                   top_k: "6"
+            - task_key: unit_test_task
+              depends_on:
+                - task_key: notebook_task
+              job_cluster_key: job_cluster
+              notebook_task:
+                notebook_path: /Users/${workspace.current_user.userName}/.bundle/${bundle.target}/${bundle.name}/files/src/run_unit_tests.py
 
   # Optionally, there could be a 'staging' target here.
   # (See Databricks docs on CI/CD at https://docs.databricks.com/dev-tools/bundles/index.html.)
