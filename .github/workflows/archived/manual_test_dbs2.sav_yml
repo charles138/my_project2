@@ -1,0 +1,101 @@
+name: Run test manually dbs2 (manual_test.yml)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  run-unit-tests-manually-dbs2:
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 4
+  
+    env:
+      DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+      DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+      FEATURE_BRANCH: ${{ github.ref_name }}
+  
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+  
+      - name: Set up Python 3.9
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+          cache: 'pip'  # caching pip dependencies
+          cache-dependency-path: setup.py
+  
+      - name: Install pip, jq, databricks, dbx
+        run: |
+          python -m pip install --upgrade pip
+          sudo apt  install jq 
+          ###
+          ### databricks cli: current version + previous version
+          ###
+          curl -V
+          curl -fsSL https://raw.githubusercontent.com/databricks/setup-cli/main/install.sh | sh
+          ls -l /usr/local/bin/databricks
+          sudo ln -s /usr/local/bin/databricks /usr/local/bin/dbs2
+          pip install databricks-cli
+          ###
+          ### dbx
+          ###  
+          pip install dbx --upgrade
+          ###
+          ### check versions
+          ###  
+          dbs2 version
+          databricks --version
+          dbx --version
+   
+      - name: Echo Github Variables
+        run: |
+          echo "Echo Github Variables"
+          echo github.head_ref ${{ github.head_ref }}
+          echo github.ref ${{ github.ref }}
+          echo github.ref_name ${{ github.ref_name }} 
+  
+      - name: list folders
+        run: |
+          ls -lah
+          cat tag.txt
+
+      - name: Lint
+        run: |
+          pip install blackbricks # https://github.com/inspera/blackbricks
+          blackbricks --check .
+           
+      - name: Install dependencies and project in dev mode
+        run: |
+          pip install -e ".[local,test]"
+  
+      - name: Run unit tests
+        run: |
+          echo "Launching unit tests"
+          pytest tests/unit
+
+      - name: Run Databricks CLI commands to update main to Staging Repo and deploy staging job
+        run: |
+          # configure databricks cli
+          # echo $DATABRICKS_TOKEN > token-file
+          # databricks configure --host $DATABRICKS_HOST --token-file token-file
+          # rm -f token-file
+          # databricks workspace ls /Repos
+          echo -e $DATABRICKS_TOKEN | dbs2 configure --host $DATABRICKS_HOST
+          dbs2 workspace list /Users
+
+          # update staging repo, delete and recreate, then update to main branch         
+          # databricks repos delete --path "/Repos/Staging/dbx-demo-test" || true
+          # databricks repos create --url "https://github.com/charles138/dbx-demo-test.git" --provider gitHub --path "/Repos/Staging/dbx-demo-test"         
+          # databricks repos update --path "/Repos/Staging/dbx-demo-test" --branch main
+          # dbs2 commands
+          dbs2 repos delete "/Repos/Staging/dbx-demo-test" || true
+          dbs2 repos create "https://github.com/charles138/dbx-demo-test.git" gitHub --path "/Repos/Staging/dbx-demo-test"
+          dbs2 repos update "/Repos/Staging/dbx-demo-test" --branch main 
+        
+          # deploy staging job
+          echo $FEATURE_BRANCH          
+          # databricks jobs list --output json | jq '.jobs[] | select(.settings.name == "dbx-demo-test-staging-job") | .job_id' | xargs -n 1 databricks jobs delete --job-id || true
+          dbs2 jobs list --output json | jq '.[] | select(.settings.name == "dbx-demo-test-staging-job") | .job_id' | xargs -n 1 dbs2 jobs delete || true
+          dbx deploy dbx-demo-test-staging-job --jinja-variables-file=conf/vars.yml
+  

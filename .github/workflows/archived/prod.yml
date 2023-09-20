@@ -1,0 +1,32 @@
+name: Deploy to prod
+
+concurrency: 1
+
+on:
+  push:
+    tags:
+      - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
+
+jobs:
+  release-pipeline:
+    permissions: write-all
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+          
+      - name: Echo Github Variables
+        run: |
+          echo "Echo Github Variables"
+          echo github.head_ref ${{ github.head_ref }}
+          echo github.ref ${{ github.ref }}
+          echo github.ref_name ${{ github.ref_name }} 
+
+      - name: list folders
+        run: |
+          ls -lah
+          cat tag.txt
+          cat conf/vars.yml
+

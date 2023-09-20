@@ -1,0 +1,93 @@
+name: CI pipeline (onpush.yml)
+
+on:
+  push:
+    branches:
+      - 'feature**'
+    tags-ignore:
+      - 'v*' # this tag type is used for release pipelines
+
+jobs:
+  ci-pipeline:
+
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 4
+
+    env:
+      DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+      DATABRICKS_TOKEN:  ${{ secrets.DATABRICKS_TOKEN }}
+      FEATURE_BRANCH: ${{ github.ref_name }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python 3.9
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+          cache: 'pip' # caching pip dependencies
+          cache-dependency-path: setup.py
+
+      - name: Install pip, databricks, dbx
+        run: |
+          python -m pip install --upgrade pip
+          pip install databricks-cli
+          pip install dbx --upgrade
+          databricks --version
+          dbx --version
+   
+      - name: Echo Github Variables
+        run: |
+          echo "Echo Github Variables"
+          echo github.head_ref ${{ github.head_ref }}
+          echo github.ref ${{ github.ref }}
+          echo github.ref_name ${{ github.ref_name }} 
+
+      - name: list folders
+        run: |
+          ls -lah
+          cat tag.txt
+          cat conf/vars.yml
+
+      # - name: Lint
+      #   run: |
+      #     pip install blackbricks # https://github.com/inspera/blackbricks
+      #     blackbricks --check .
+  
+      # - name: Install dependencies and project in dev mode
+      #   run: |
+      #     pip install -e ".[local,test]"
+
+      # - name: Run unit tests
+      #   run: |
+      #     echo "Launching unit tests"
+      #     pytest tests/unit
+
+      # - name: Run integration tests (assets only upload)
+      #   run: |
+      #     dbx deploy dbx-demo-test-sample-tests --assets-only
+
+      # - name: Run the workflow in a jobless fashion
+      #   run: |
+      #     dbx launch dbx-demo-test-sample-tests --from-assets --trace
+
+      - name: Run Databricks CLI commands to update feature* to Development Repo and deploy the development job
+        run: |
+          # configure databricks cli
+          echo $DATABRICKS_TOKEN > token-file
+          databricks configure --host $DATABRICKS_HOST --token-file token-file
+          rm -f token-file
+          databricks workspace ls /Repos
+          
+          # update development repo, delete and recreate, then update branch         
+          databricks repos delete --path "/Repos/Development/dbx-demo-test-${{ github.ref_name }}" || true
+          databricks repos create --url "https://github.com/charles138/dbx-demo-test.git" --provider gitHub --path "/Repos/Development/dbx-demo-test-${{ github.ref_name }}"
+          databricks repos update --path "/Repos/Development/dbx-demo-test-${{ github.ref_name }}" --branch ${{ github.ref_name }}
+          
+          # deploy development job
+          echo $FEATURE_BRANCH
+          dbx deploy dbx-demo-test-development-${{ github.ref_name }}-job --jinja-variables-file=conf/vars.yml
+          dbx launch dbx-demo-test-development-${{ github.ref_name }}-job
+          

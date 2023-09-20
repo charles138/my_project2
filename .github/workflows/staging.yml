@@ -1,0 +1,35 @@
+name: Deploy to Staging
+
+concurrency: 1
+
+on:
+  pull_request:
+    types:
+      - closed
+    branches:
+      - 'main'
+
+jobs:
+  deploy:
+    name: "Deploy bundle"
+    runs-on: ubuntu-latest
+    
+    if: startsWith(github.ref_name, 'main') && github.event.pull_request.merged && startsWith(github.head_ref, 'feature')
+          
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+    
+      - name: Echo Github Variables
+        run: |
+          echo "Echo Github Variables"
+          echo github.head_ref ${{ github.head_ref }}
+          echo github.ref ${{ github.ref }}
+          echo github.ref_name ${{ github.ref_name }} 
+
+      - name: list folders
+        run: |
+          ls -lah
+          cat tag.txt
+          cat conf/vars.yml
+

@@ -1,0 +1,70 @@
+name: Merge from feature* to main (after_pull_request_merge.yml)
+
+on:
+  pull_request:
+    types:
+      - closed
+    branches:
+      - 'main'
+
+jobs:
+  update-staging-repo:
+    runs-on: ubuntu-latest
+    
+    if: startsWith(github.ref_name, 'main') && github.event.pull_request.merged && startsWith(github.head_ref, 'feature')
+    
+    strategy:
+        max-parallel: 4
+  
+    env:
+        DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+        DATABRICKS_TOKEN:  ${{ secrets.DATABRICKS_TOKEN }}
+      
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      
+      - name: Set up Python 3.9
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+          cache: 'pip' # caching pip dependencies
+          cache-dependency-path: setup.py
+
+      - name: Install pip, databricks, dbx
+        run: |
+          python -m pip install --upgrade pip
+          pip install databricks-cli
+          pip install dbx --upgrade
+          databricks --version
+          dbx --version
+
+      - name: Echo Github Variables
+        run: |
+          echo "Echo Github Variables"
+          echo github.head_ref ${{ github.head_ref }}
+          echo github.ref ${{ github.ref }}
+          echo github.ref_name ${{ github.ref_name }} 
+
+      - name: list folders
+        run: |
+          ls -lah
+          cat tag.txt
+          cat conf/vars.yml
+
+      - name: Run Databricks CLI commands to update main to Staging Repo and deploy staging job
+        run: |
+          # configure databricks cli
+          echo $DATABRICKS_TOKEN > token-file
+          databricks configure --host $DATABRICKS_HOST --token-file token-file
+          rm -f token-file
+          databricks workspace ls /Repos
+
+          # update staging repo, delete and recreate, then update branch
+          databricks repos delete --path "/Repos/Staging/dbx-demo-test" || true
+          databricks repos create --url "https://github.com/charles138/dbx-demo-test.git" --provider gitHub --path "/Repos/Staging/dbx-demo-test"         
+          databricks repos update --path "/Repos/Staging/dbx-demo-test" --branch main
+          
+          # deploy staging job
+          dbx deploy dbx-demo-test-staging-job --jinja-variables-file=conf/vars.yml
+  
