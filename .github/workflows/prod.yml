@@ -29,3 +29,12 @@ jobs:
           ls -lah
           cat tag.txt
 
+      - name: Create release
+        env:
+          tag: ${{ github.ref }}
+        run: |
+          gh release create "$tag" \
+              --repo="$GITHUB_REPOSITORY" \
+              --title="${GITHUB_REPOSITORY#*/} ${tag#v}" \
+              --generate-notes
+  
