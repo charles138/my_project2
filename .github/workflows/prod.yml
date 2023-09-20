@@ -28,5 +28,4 @@ jobs:
         run: |
           ls -lah
           cat tag.txt
-          cat conf/vars.yml
 
