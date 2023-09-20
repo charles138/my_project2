@@ -27,7 +27,8 @@ targets:
 
           tasks:
             - task_key: notebook_task
-              job_cluster_key: job_cluster
+              # job_cluster_key: job_cluster
+              existing_cluster_id: 0729-134934-wrndqqvh
               notebook_task:
                 # notebook_path: ../src/notebook.ipynb
                 notebook_path: /Users/${workspace.current_user.userName}/.bundle/${bundle.target}/${bundle.name}/files/src/notebook
@@ -37,7 +38,8 @@ targets:
             - task_key: unit_test_task
               depends_on:
                 - task_key: notebook_task
-              job_cluster_key: job_cluster
+              # job_cluster_key: job_cluster
+              existing_cluster_id: 0729-134934-wrndqqvh
               notebook_task:
                 notebook_path: /Users/${workspace.current_user.userName}/.bundle/${bundle.target}/${bundle.name}/files/src/run_unit_tests
 
