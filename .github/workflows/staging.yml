@@ -1,4 +1,4 @@
-name: Deploy to Staging
+name: Deploy to staging
 
 concurrency: 1
 
@@ -31,5 +31,5 @@ jobs:
         run: |
           ls -lah
           cat tag.txt
-          cat conf/vars.yml
+
 
