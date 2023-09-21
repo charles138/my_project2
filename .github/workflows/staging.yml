@@ -32,4 +32,14 @@ jobs:
           ls -lah
           cat tag.txt
 
+      - name: Install databricks cli
+        uses: databricks/setup-cli@main
+
+      - name: Deploy bundle
+        run: databricks bundle deploy
+        env:
+            DATABRICKS_TOKEN: ${{ secrets.QA_DB_TOKEN }}
+            DATABRICKS_BUNDLE_ENV: staging      
+  
+
 

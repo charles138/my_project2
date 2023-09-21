@@ -38,4 +38,13 @@ jobs:
               --repo="$GITHUB_REPOSITORY" \
               --title="${GITHUB_REPOSITORY#*/} ${tag#v}" \
               --generate-notes
-  
+      
+      - name: Install databricks cli
+        uses: databricks/setup-cli@main
+
+      - name: Deploy bundle
+        run: databricks bundle deploy
+        env:
+          DATABRICKS_TOKEN: ${{ secrets.PROD_DB_TOKEN }}
+          DATABRICKS_BUNDLE_ENV: prod              
+
