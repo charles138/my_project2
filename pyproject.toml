@@ -12,7 +12,7 @@ line-length = 120
 [tool.coverage.run]
 branch = true
 source = [
-    "dbx_demo_test"
+    "my_project2"
 ]
 
 [tool.coverage.report]
