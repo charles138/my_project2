@@ -31,7 +31,7 @@ targets:
               existing_cluster_id: 0729-134934-wrndqqvh
               notebook_task:
                 # notebook_path: ../src/notebook.ipynb
-                notebook_path: /Users/${workspace.current_user.userName}/.bundle/${bundle.target}/${bundle.name}/files/src/notebook
+                notebook_path: /Users/${workspace.current_user.userName}/.bundle/${bundle.target}/${bundle.name}/files/src/notebook              
                 base_parameters: 
                   Environment: ${bundle.target}
                   top_k: "6"
