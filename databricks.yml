@@ -63,7 +63,7 @@ targets:
           name: my_project2_job_${bundle.target}
 
           schedule:
-            quartz_cron_expression: '00 00 20 * * ?'
+            quartz_cron_expression: '00 30 08 * * ?'
             timezone_id: America/New_York
 
           email_notifications:
@@ -111,7 +111,7 @@ targets:
           name: my_project2_job_${bundle.target}
 
           schedule:
-            quartz_cron_expression: '00 00 20 * * ?'
+            quartz_cron_expression: '00 45 08 * * ?'
             timezone_id: America/New_York
 
           email_notifications:
